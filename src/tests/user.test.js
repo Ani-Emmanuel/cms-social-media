@@ -79,6 +79,28 @@ describe('User Endpoints', () => {
 		expect(data).not.toHaveProperty('image');
 	});
 
+	it('should it should fail because of wrong email format', async () => {
+		const response = await request
+			.post('/api/v1/registration')
+			.set('content-type', 'application/json')
+			.send({
+				name: 'Arinzechukwu Arthur',
+				email: '.@.angeldemariae@gmail.com',
+				password: 'password'
+			});
+
+		const {
+			body: { message, code, error },
+			statusCode
+		} = response;
+
+		console.log(response);
+		expect(message[0].message).toBe('"email" must be a valid email');
+		expect(code).toBe(400);
+		expect(statusCode).toBe(400);
+		expect(error).toBeTruthy();
+	});
+
 	it('should fail because user already exist', async () => {
 		const response = await request
 			.post('/api/v1/registration')
