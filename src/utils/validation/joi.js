@@ -3,7 +3,7 @@ const { validationResponse } = require('../helpers/response');
 const formDataValidation = async (schema, body) => {
 	const result = await schema.validate(body, { abortEarly: false });
 	if (result.error) {
-		return result.error.details;
+		throw validationResponse(result.error.details);
 	}
 };
 
@@ -11,7 +11,7 @@ const queryParamValidation = (schema) => {
 	return (req, res, next) => {
 		const result = schema.validate(req.query, { abortEarly: false });
 		if (result.error) {
-			return res.status(400).json(validationResponse(result.error.details));
+			throw validationResponse(result.error.details);
 		}
 		next();
 	};
@@ -24,7 +24,7 @@ const paramValidation = (schema, name) => {
 			{ abortEarly: false }
 		);
 		if (result.error) {
-			return res.status(400).json(validationResponse(result.error.details));
+			throw validationResponse(result.error.details);
 		} else {
 			if (!req.value) req.value = {};
 			if (!req.value['params']) req.value['params'] = {};
@@ -39,7 +39,7 @@ function bodyValidation(schema) {
 		const result = schema.validate(req.body, { abortEarly: false });
 
 		if (result.error) {
-			return res.status(400).json(validationResponse(result.error.details));
+			throw validationResponse(result.error.details);
 		} else {
 			if (!req.value) req.value = {};
 			if (!req.value['body']) req.value['body'] = {};
