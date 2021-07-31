@@ -29,10 +29,19 @@ module.exports = {
 	},
 
 	validationResponse: (errors) => {
+		let messages = [];
+		for (const item of errors) {
+			let data = {};
+			data['message'] = item.message;
+			data['path'] = item.path;
+			data['problem'] = item.context.invalids;
+
+			messages.push(data);
+		}
 		return {
-			message: 'Validation errors',
-			error: true,
-			errors
+			message: messages,
+			code: 400,
+			error: true
 		};
 	}
 };
